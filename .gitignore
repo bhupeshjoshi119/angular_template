@@ -40,3 +40,67 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Upload directories (user uploaded files)
+/src/assets/uploads/
+/uploads/
+/public/uploads/
+
+# Test PDFs (50 PDFs for bulk upload testing - IGNORED)
+/test-data/
+/test-pdfs/
+*.pdf
+*.PDF
+
+# EXCEPTION: Keep sample PDF template (small file for reference)
+!src/assets/sample-data/sample-template.pdf
+
+# Test images (keep sample images, ignore bulk test data)
+/src/assets/test-images/
+
+# Generated reports (IGNORED - can be large)
+/reports/
+/downloads/
+*.csv
+*.xlsx
+*.xls
+
+# EXCEPTION: Keep sample CSV/Excel templates
+!src/assets/sample-data/*.csv
+!src/assets/sample-data/*.xlsx
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database files (if using local SQLite for testing)
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Build artifacts
+*.tgz
+*.zip
+
+# OS generated files
+*.swp
+*.swo
+*~
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
