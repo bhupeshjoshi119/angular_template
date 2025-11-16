@@ -1,0 +1,206 @@
+<div class="ecom-container">
+  <!-- Products List View -->
+  <div class="products-view" *ngIf="currentView === 'products'">
+    <div class="header">
+      <div class="header-left">
+        <button class="menu-btn">☰</button>
+        <h1>Products</h1>
+      </div>
+      <button class="profile-btn">👤</button>
+    </div>
+
+    <div class="search-section">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Search by product name..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+        />
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <button
+        class="filter-chip"
+        [class.active]="selectedCategory === 'all'"
+        (click)="filterByCategory('all')"
+      >
+        All Categories ✕
+      </button>
+      <button
+        class="filter-chip"
+        [class.active]="selectedCategory === 'Electronics'"
+        (click)="filterByCategory('Electronics')"
+      >
+        Electronics
+      </button>
+      <button
+        class="filter-chip"
+        [class.active]="selectedCategory === 'Apparel'"
+        (click)="filterByCategory('Apparel')"
+      >
+        Apparel
+      </button>
+      <button class="filter-icon">☰</button>
+    </div>
+
+    <div class="products-list">
+      <div class="product-card" *ngFor="let product of paginatedProducts">
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <span class="category-badge" [style.background-color]="getCategoryColor(product.category)">
+            {{ product.category }}
+          </span>
+          <p class="price">${{ product.price.toFixed(2) }}</p>
+        </div>
+        <div class="product-image">
+          <img [src]="product.imageUrl" [alt]="product.name" />
+        </div>
+        <div class="product-actions">
+          <button class="action-btn edit" (click)="editProduct(product)">✏️</button>
+          <button class="action-btn delete" (click)="deleteProduct(product.id)">🗑️</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Component -->
+    <app-pagination
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      [pageSizeOptions]="pageSizeOptions"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)">
+    </app-pagination>
+
+    <button class="fab" (click)="showView('add-product')">+ Add Product</button>
+  </div>
+
+  <!-- Categories View -->
+  <div class="categories-view" *ngIf="currentView === 'categories'">
+    <div class="header">
+      <div class="header-left">
+        <button class="menu-btn">☰</button>
+        <h1>Categories</h1>
+      </div>
+      <button class="search-btn">🔍</button>
+    </div>
+
+    <div class="categories-list">
+      <div class="category-item" *ngFor="let category of categories">
+        <div class="category-icon" [style.background-color]="category.color">
+          {{ category.icon }}
+        </div>
+        <div class="category-info">
+          <h3>{{ category.name }}</h3>
+          <p class="category-id">ID: #{{ category.id }}</p>
+        </div>
+        <div class="category-actions">
+          <button class="action-btn edit">✏️</button>
+          <button class="action-btn delete" (click)="deleteCategory(category.id)">🗑️</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="fab">+</button>
+  </div>
+
+  <!-- Add/Edit Product View -->
+  <div class="add-product-view" *ngIf="currentView === 'add-product'">
+    <div class="modal-header">
+      <button class="close-btn" (click)="showView('products')">✕</button>
+      <h2>{{ editingProductId ? 'Edit Product' : 'Add Product' }}</h2>
+    </div>
+
+    <div class="form-container">
+      <div class="form-group">
+        <label>Product Name</label>
+        <input
+          type="text"
+          [(ngModel)]="productForm.name"
+          placeholder="Enter product name"
+        />
+        <p class="helper-text">This will be the public name of the product.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select [(ngModel)]="productForm.category">
+          <option value="">Select a category</option>
+          <option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</option>
+        </select>
+        <p class="helper-text">Select a category for organization.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Price</label>
+        <div class="price-input">
+          <input
+            type="number"
+            [(ngModel)]="productForm.price"
+            placeholder="0.00"
+            step="0.01"
+          />
+          <span class="currency">$</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Image URL</label>
+        <input
+          type="text"
+          [(ngModel)]="productForm.imageUrl"
+          (input)="onImageUrlChange()"
+          placeholder="https://images.unsplash.com/photo-15422..."
+        />
+        <p class="error-text" *ngIf="productForm.imageUrl && !isValidUrl(productForm.imageUrl)">
+          Please enter a valid URL.
+        </p>
+      </div>
+
+      <div class="image-preview-section" *ngIf="imagePreview">
+        <label>Image Preview</label>
+        <div class="image-preview">
+          <img [src]="imagePreview" alt="Product preview" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="showView('products')">Cancel</button>
+        <button
+          class="btn-save"
+          (click)="addProduct()"
+          [disabled]="!productForm.name || !productForm.category || !productForm.price"
+        >
+          {{ editingProductId ? 'Update Product' : 'Save Product' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item" (click)="showView('products')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item active" (click)="showView('products')">
+      <span class="nav-icon">📦</span>
+      <span class="nav-label">Products</span>
+    </button>
+    <button class="nav-item" (click)="showView('categories')">
+      <span class="nav-icon">🏷️</span>
+      <span class="nav-label">Categories</span>
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon">👥</span>
+      <span class="nav-label">Users</span>
+    </button>
+    <button class="nav-item">
+      <span class="nav-icon">📤</span>
+      <span class="nav-label">Upload</span>
+    </button>
+  </nav>
+</div>

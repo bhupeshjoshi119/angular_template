@@ -1,0 +1,58 @@
+<nav class="pagination-container" aria-label="Pagination" *ngIf="totalPages > 0">
+  <!-- Display Text -->
+  <div class="page-info">
+    {{ getDisplayText() }}
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-controls">
+    <!-- Previous Button -->
+    <button
+      class="page-button prev-button"
+      [disabled]="!hasPrevious()"
+      (click)="previousPage()"
+      aria-label="Go to previous page">
+      ← Prev
+    </button>
+
+    <!-- Page Numbers -->
+    <ng-container *ngFor="let page of visiblePageNumbers">
+      <!-- Ellipsis -->
+      <span *ngIf="!isPageNumber(page)" class="ellipsis">...</span>
+
+      <!-- Page Number Button -->
+      <button
+        *ngIf="isPageNumber(page)"
+        class="page-button"
+        [class.active]="isCurrentPage($any(page))"
+        [attr.aria-current]="isCurrentPage($any(page)) ? 'page' : null"
+        [attr.aria-label]="'Go to page ' + page"
+        (click)="goToPage($any(page))">
+        {{ page }}
+      </button>
+    </ng-container>
+
+    <!-- Next Button -->
+    <button
+      class="page-button next-button"
+      [disabled]="!hasNext()"
+      (click)="nextPage()"
+      aria-label="Go to next page">
+      Next →
+    </button>
+  </div>
+
+  <!-- Page Size Selector -->
+  <div class="page-size-selector" *ngIf="showPageSizeSelector">
+    <label for="pageSize">Items per page:</label>
+    <select
+      id="pageSize"
+      [(ngModel)]="itemsPerPage"
+      (change)="changePageSize(itemsPerPage)"
+      aria-label="Select items per page">
+      <option *ngFor="let size of pageSizeOptions" [value]="size">
+        {{ size }}
+      </option>
+    </select>
+  </div>
+</nav>

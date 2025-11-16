@@ -334,3 +334,25 @@
 
 
 <router-outlet />
+
+<!-- Component Toggle Buttons -->
+<div style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; gap: 10px;">
+  <button
+    (click)="showMetaQuest = !showMetaQuest; showEcom = false"
+    style="padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);"
+  >
+    {{ showMetaQuest ? 'Hide' : 'Show' }} Meta Quest
+  </button>
+  <button
+    (click)="showEcom = !showEcom; showMetaQuest = false"
+    style="padding: 12px 24px; background: linear-gradient(135deg, #5b7cff 0%, #4a6bef 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 15px rgba(91, 124, 255, 0.4);"
+  >
+    {{ showEcom ? 'Hide' : 'Show' }} E-commerce
+  </button>
+</div>
+
+<!-- Meta Quest VR Component -->
+<app-meta-quest *ngIf="showMetaQuest"></app-meta-quest>
+
+<!-- E-commerce Product Management Component -->
+<app-card-details-ecom *ngIf="showEcom"></app-card-details-ecom>
